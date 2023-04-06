@@ -2,7 +2,7 @@ $Location = "westeurope"
 $LAName='tjk-law-custom'
 $LAResourceGroup='rg-lacustomlog'
 #$WorkSpace = '579bdd0f-ad8c-4769-81d9-5e01002ce48d'
-$CustomTableName='mycustomtable'
+$CustomTableName='oaudit'
 $deploymentname = get-date -UFormat %y%m%d%H%M
 
 New-AzResourceGroup -Location $Location -Name $LAResourceGroup -Force

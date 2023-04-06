@@ -1,0 +1,5 @@
+let testtable = datatable(RawData:string)['2023-04-04T11:23:10.283011+00:00 copc99ennvm01 journal:info: Oracle Unified Audit[329046]: LENGTH: \'198\' TYPE:"4" DBID:"2012501193" SESID:"3211764589" CLIENTID:"" ENTRYID:"1" STMTID:"1" DBUSER:"SYS" CURUSER:"SYS" ACTION:"100" RETCODE:"0" SCHEMA:"" OBJNAME:"" PDB_GUID:"DE03BE2347E57ADBE053C00DD10A4229"'];
+testtable
+| extend data = split(RawData, ' ')
+| extend TimeGenerated = todatetime(data[0]), Computer = data[1], Journal = split(data[2],':')[1]
+| extend Length = toint(substring(data[7], 1, strlen(data[7])-2))

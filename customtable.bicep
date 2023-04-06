@@ -14,6 +14,9 @@ param customTableName string = '<CustomTableName>'
 
 param location string = resourceGroup().location
 
+@description('KQL Ingestion transformation query')
+param transformKql string = 'source|extend Data = substring(RawData, 22, strlen(RawData))| extend Dynamic = split(Data,":")| extend Computer = tostring(Dynamic[0]), Error = toint(Dynamic[1]), Description = tostring(Dynamic[2])|where Error > 5| project-away RawData, Data, Dynamic'
+
 var dceName = 'dceSample'
 var dcrName = 'dcrSample'
 var customTableName_CL = 'Custom-${customTableName}_CL'
@@ -25,18 +28,6 @@ var streamDeclarations = { 'Custom-${customTableName}_CL': {
     }
     {
         name: 'RawData'
-        type: 'string'
-    }
-    {
-        name: 'Description'
-        type: 'string'
-    }
-    {
-        name: 'Error'
-        type: 'int'
-    }
-    {
-        name: 'Computer'
         type: 'string'
     }
 ]
@@ -144,7 +135,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
         destinations:[
           workspaceId
         ]
-        transformKql: 'source|extend Data = substring(RawData, 22, strlen(RawData))| extend Dynamic = split(Data,":")| extend Computer = tostring(Dynamic[0]), Error = toint(Dynamic[1]), Description = tostring(Dynamic[2])|where Error > 5| project-away RawData, Data, Dynamic'
+        transformKql: transformKql
         outputStream: customTableName_CL
       }
     ]
