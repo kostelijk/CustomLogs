@@ -48,20 +48,56 @@ resource runningVMTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10
           type: 'datetime'
         }
         {
-          name: 'RawData'
+          name: 'Computer'
           type: 'string'
         }
         {
-          name: 'Description'
+          name: 'Journal'
           type: 'string'
         }
         {
-          name: 'Error'
+          name: 'AuditType'
           type: 'int'
         }
         {
-          name: 'Computer'
+          name: 'Length'
+          type: 'int'
+        }
+        {
+          name: 'DBI'
+          type: 'int'
+        }
+        {
+          name: 'SesId'
+          type: 'long'
+        }
+        {
+          name: 'EntryId'
+          type: 'int'
+        }
+        {
+          name: 'STMTId'
+          type: 'int'
+        }
+        {
+          name: 'DbUser'
           type: 'string'
+        }
+        {
+          name: 'CurUser'
+          type: 'string'
+        }
+        {
+          name: 'Action'
+          type: 'int'
+        }
+        {
+          name: 'RetCode'
+          type: 'int'
+        }
+        {
+          name: 'PDB_GUID'
+          type: 'guid'
         }
       ]
     }
