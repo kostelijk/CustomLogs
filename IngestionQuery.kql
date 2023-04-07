@@ -2,4 +2,18 @@ let testtable = datatable(RawData:string)['2023-04-04T11:23:10.283011+00:00 copc
 testtable
 | extend data = split(RawData, ' ')
 | extend TimeGenerated = todatetime(data[0]), Computer = data[1], Journal = split(data[2],':')[1]
-| extend Length = toint(substring(data[7], 1, strlen(data[7])-2))
+| extend AuditType = toint(replace_string(tostring(split(data[8],":")[1]),'\"',''))
+| extend Length = toint(replace_string(tostring(data[7]),'\'',''))
+| extend DBI = toint(replace_string(tostring(split(data[9],":")[1]),'\"',''))
+| extend SesId = tolong(replace_string(tostring(split(data[10],":")[1]),'\"',''))
+| extend ClientId = replace_string(tostring(split(data[11],":")[1]),'\"','')
+| extend EntryId = toint(replace_string(tostring(split(data[12],":")[1]),'\"',''))
+| extend STMTId = toint(replace_string(tostring(split(data[13],":")[1]),'\"',''))
+| extend DbUser = replace_string(tostring(split(data[14],":")[1]),'\"','')
+| extend CurUser = replace_string(tostring(split(data[15],":")[1]),'\"','')
+| extend Action = toint(replace_string(tostring(split(data[16],":")[1]),'\"',''))
+| extend RetCode = toint(replace_string(tostring(split(data[17],":")[1]),'\"',''))
+| extend Schema = replace_string(tostring(split(data[18],":")[1]),'\"','')
+| extend ObjName = replace_string(tostring(split(data[19],":")[1]),'\"','')
+| extend PDB_GUID = replace_string(tostring(split(data[20],":")[1]),'\"','')
+| project-away data, RawData
