@@ -1,19 +1,22 @@
 let testtable = datatable(RawData:string)['2023-04-04T11:23:10.283011+00:00 copc99ennvm01 journal:info: Oracle Unified Audit[329046]: LENGTH: \'198\' TYPE:"4" DBID:"2012501193" SESID:"3211764589" CLIENTID:"" ENTRYID:"1" STMTID:"1" DBUSER:"SYS" CURUSER:"SYS" ACTION:"100" RETCODE:"0" SCHEMA:"" OBJNAME:"" PDB_GUID:"DE03BE2347E57ADBE053C00DD10A4229"'];
 testtable
-| extend data = split(RawData, ' ')
-| extend TimeGenerated = todatetime(data[0]), Computer = data[1], Journal = split(data[2],':')[1]
-| extend AuditType = toint(replace_regex(tostring(split(data[8],":")[1]),'\"',''))
-| extend Length = toint(replace_regex(tostring(data[7]),'\'',''))
-| extend DBI = toint(replace_regex(tostring(split(data[9],":")[1]),'\"',''))
-| extend SesId = tolong(replace_regex(tostring(split(data[10],":")[1]),'\"',''))
-| extend ClientId = replace_regex(tostring(split(data[11],":")[1]),'\"','')
-| extend EntryId = toint(replace_regex(tostring(split(data[12],":")[1]),'\"',''))
-| extend STMTId = toint(replace_regex(tostring(split(data[13],":")[1]),'\"',''))
-| extend DbUser = replace_regex(tostring(split(data[14],":")[1]),'\"','')
-| extend CurUser = replace_regex(tostring(split(data[15],":")[1]),'\"','')
-| extend Action = toint(replace_regex(tostring(split(data[16],":")[1]),'\"',''))
-| extend RetCode = toint(replace_regex(tostring(split(data[17],":")[1]),'\"',''))
-| extend Schema = replace_regex(tostring(split(data[18],":")[1]),'\"','')
-| extend ObjName = replace_regex(tostring(split(data[19],":")[1]),'\"','')
-| extend PDB_GUID = replace_regex(tostring(split(data[20],":")[1]),'\"','')
-| project-away data, RawData
+| extend ddata = split(RawData, ' ')
+| extend TimeGenerated = todatetime(ddata[0])
+| extend Computer = ddata[1]
+| extend Journal = split(ddata[2],':')[1]
+| extend Oracle_Unified_Audit = toint(replace(']:','',tostring(split(ddata[5],"[")[1])))
+| extend Length = toint(replace_regex(tostring(ddata[7]),'\'',''))
+| extend AuditType = toint(replace('\"','',tostring(split(ddata[8],":")[1])))
+| extend DBI = toint(replace('\"','',tostring(split(ddata[9],":")[1])))
+| extend SesId = tolong(replace('\"','',tostring(split(ddata[10],":")[1])))
+| extend ClientId = replace('\"','',tostring(split(ddata[11],":")[1]))
+| extend EntryId = toint(replace('\"','',tostring(split(ddata[12],":")[1])))
+| extend STMTId = toint(replace('\"','',tostring(split(ddata[13],":")[1])))
+| extend DbUser = replace('\"','',tostring(split(ddata[14],":")[1]))
+| extend CurUser = replace('\"','',tostring(split(ddata[15],":")[1]))
+| extend Action = toint(replace('\"','',tostring(split(ddata[16],":")[1])))
+| extend RetCode = toint(replace('\"','',tostring(split(ddata[17],":")[1])))
+| extend Schema = replace('\"','',tostring(split(ddata[18],":")[1]))
+| extend ObjName = replace('\"','',tostring(split(ddata[19],":")[1]))
+| extend PDB_GUID = replace('\"','',tostring(split(ddata[20],":")[1]))
+| project-away ddata, RawData
