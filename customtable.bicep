@@ -15,7 +15,8 @@ param customTableName string = '<CustomTableName>'
 param location string = resourceGroup().location
 
 @description('KQL Ingestion transformation query')
-param transformKql string = 'source|extend Data = substring(RawData, 22, strlen(RawData))| extend Dynamic = split(Data,":")| extend Computer = tostring(Dynamic[0]), Error = toint(Dynamic[1]), Description = tostring(Dynamic[2])|where Error > 5| project-away RawData, Data, Dynamic'
+//param transformKql string = 'source|extend Data = substring(RawData, 22, strlen(RawData))| extend Dynamic = split(Data,":")| extend Computer = tostring(Dynamic[0]), Error = toint(Dynamic[1]), Description = tostring(Dynamic[2])|where Error > 5| project-away RawData, Data, Dynamic'
+param transformKql string = 'source| extend data = split(RawData, \' \')| extend TimeGenerated = todatetime(data[0]), Computer = tostring(data[1]), JournalType = tostring(split(data[2],\':\')[1]), AuditType = toint(replace(\'"\',\'\',tostring(split(data[8],":")[1]))), Length = toint(replace(\'\\\'\',\'\',tostring(data[7]))), DBI = toint(replace(\'"\',\'\',tostring(split(data[9],":")[1]))), SesId = tolong(replace(\'"\',\'\',tostring(split(data[10],":")[1]))), ClientId = replace(\'"\',\'\',tostring(split(data[11],":")[1])), EntryId = toint(replace(\'"\',\'\',tostring(split(data[12],":")[1]))), STMTId = toint(replace(\'"\',\'\',tostring(split(data[13],":")[1]))), DbUser = replace(\'"\',\'\',tostring(split(data[14],":")[1])), CurUser = replace(\'"\',\'\',tostring(split(data[15],":")[1])), Action = toint(replace(\'"\',\'\',tostring(split(data[16],":")[1]))), RetCode = toint(replace(\'"\',\'\',tostring(split(data[17],":")[1]))), Schema = replace(\'"\',\'\',tostring(split(data[18],":")[1])), ObjName = replace(\'"\',\'\',tostring(split(data[19],":")[1])), PDB_GUID = toguid(replace(\'"\',\'\',tostring(split(data[20],":")[1])))| project-away data, RawData'
 
 var dceName = 'dceSample'
 var dcrName = 'dcrSample'
@@ -52,7 +53,7 @@ resource runningVMTable 'Microsoft.OperationalInsights/workspaces/tables@2022-10
           type: 'string'
         }
         {
-          name: 'Journal'
+          name: 'JournalType'
           type: 'string'
         }
         {
@@ -128,7 +129,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
             customTableName_CL
           ]
           filePatterns: [
-            'c:\\temp\\*.log'
+            'c:\\temp\\dbaudit*.log'
           ]
           format: 'text'
           settings: {
@@ -143,7 +144,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
             customTableName_CL
           ]
           filePatterns: [
-            '//var//*.log'
+            '//var//dbaudit*.log'
           ]
           format: 'text'
           settings: {

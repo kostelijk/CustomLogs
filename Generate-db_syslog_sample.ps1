@@ -19,7 +19,7 @@ if (!(Test-Path -Path $logFolder))
 
 $computerName = $env:COMPUTERNAME
 
-$logFileName = "TestLog-$(Get-Date -format yyyyMMddhhmm).log"
+$logFileName = "dbaudit-$(Get-Date -format yyyyMMddhhmm).log"
 $db_syslog_sample = Get-Content -Path "$logFolder\\db_syslog_sample.txt"
 
 foreach($logline in $db_syslog_sample){
