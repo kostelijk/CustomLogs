@@ -1,6 +1,6 @@
 $Location = "westeurope"
-$LAName='tjk-law-custom'
-$LAResourceGroup='rg-lacustomlog'
+$LAName='lawcustom'
+$LAResourceGroup='rg-customlog'
 #$WorkSpace = '579bdd0f-ad8c-4769-81d9-5e01002ce48d'
 $CustomTableName='oracleaudit'
 $deploymentname = get-date -UFormat %y%m%d%H%M
