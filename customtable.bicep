@@ -19,8 +19,18 @@ param location string = resourceGroup().location
 //param transformKql string = 'source| extend ddata = split(RawData, \' \')| extend TimeGenerated = todatetime(ddata[0]), Computer = tostring(ddata[1]), JournalType = tostring(split(ddata[2],\':\')[1]), AuditType = toint(replace(\'"\',\'\',tostring(split(ddata[8],":")[1]))), Length = toint(replace(\'\\\'\',\'\',tostring(ddata[7]))), DBI = toint(replace(\'"\',\'\',tostring(split(ddata[9],":")[1]))), SesId = tolong(replace(\'"\',\'\',tostring(split(ddata[10],":")[1]))), ClientId = replace(\'"\',\'\',tostring(split(ddata[11],":")[1])), EntryId = toint(replace(\'"\',\'\',tostring(split(ddata[12],":")[1]))), STMTId = toint(replace(\'"\',\'\',tostring(split(ddata[13],":")[1]))), DbUser = replace(\'"\',\'\',tostring(split(ddata[14],":")[1])), CurUser = replace(\'"\',\'\',tostring(split(ddata[15],":")[1])), Action = toint(replace(\'"\',\'\',tostring(split(ddata[16],":")[1]))), RetCode = toint(replace(\'"\',\'\',tostring(split(ddata[17],":")[1]))), Schema = replace(\'"\',\'\',tostring(split(ddata[18],":")[1])), ObjName = replace(\'"\',\'\',tostring(split(ddata[19],":")[1])), PDB_GUID = toguid(replace(\'"\',\'\',tostring(split(ddata[20],":")[1])))| project-away ddata'
 param transformKql string = 'source| extend ddata = split(RawData, \' \')| extend Computer = tostring(ddata[1]), JournalType = tostring(split(ddata[2],\':\')[1]), Oracle_Unified_Audit = toint(replace(\']:\',\'\',tostring(split(ddata[5],"[")[1]))), AuditType = toint(replace(\'"\',\'\',tostring(split(ddata[8],":")[1]))), Length = toint(replace(\'\\\'\',\'\',tostring(ddata[7]))), DBI = toint(replace(\'"\',\'\',tostring(split(ddata[9],":")[1]))), SesId = tolong(replace(\'"\',\'\',tostring(split(ddata[10],":")[1]))), ClientId = replace(\'"\',\'\',tostring(split(ddata[11],":")[1])), EntryId = toint(replace(\'"\',\'\',tostring(split(ddata[12],":")[1]))), STMTId = toint(replace(\'"\',\'\',tostring(split(ddata[13],":")[1]))), DbUser = replace(\'"\',\'\',tostring(split(ddata[14],":")[1])), CurUser = replace(\'"\',\'\',tostring(split(ddata[15],":")[1])), Action = toint(replace(\'"\',\'\',tostring(split(ddata[16],":")[1]))), RetCode = toint(replace(\'"\',\'\',tostring(split(ddata[17],":")[1]))), Schema = replace(\'"\',\'\',tostring(split(ddata[18],":")[1])), ObjName = replace(\'"\',\'\',tostring(split(ddata[19],":")[1])), PDB_GUID = toguid(replace(\'"\',\'\',tostring(split(ddata[20],":")[1])))| project-away ddata, RawData'
 
-var dceName = 'dceSample'
-var dcrName = 'dcrSample'
+@description('Data Collection Endpoint')
+param dceName string = 'dceSample'
+
+@description('Data Collection Rule')
+param dcrName string = 'dcrSample'
+
+@description('Windows log file pattern')
+param windowsLogFileFormat string = 'c:\\temp\\dbaudit*.log'
+
+@description('Linux log file pattern')
+param linuxLogFileFormat string = '/var/dbaudit*.log'
+
 var customTableName_CL = 'Custom-${customTableName}_CL'
 var streamDeclarations = { 'Custom-${customTableName}_CL': {
   columns: [
@@ -134,7 +144,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
             customTableName_CL
           ]
           filePatterns: [
-            'c:\\temp\\dbaudit*.log'
+            windowsLogFileFormat
           ]
           format: 'text'
           settings: {
@@ -149,7 +159,7 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
             customTableName_CL
           ]
           filePatterns: [
-            '//var//dbaudit*.log'
+            linuxLogFileFormat
           ]
           format: 'text'
           settings: {
