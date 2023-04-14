@@ -1,0 +1,108 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "laName": {
+      "value": "lawcustom"
+    },
+    "laResourceGroup": {
+      "value": "rg-customlog"
+    },
+    "customTableName": {
+      "value": "oracleaudit"
+    },
+    "transformKql": {
+      "value": "source| extend ddata = split(RawData, ' ')| extend Computer = tostring(ddata[1]), JournalType = tostring(split(ddata[2],':')[1]), Oracle_Unified_Audit = toint(replace(']:','',tostring(split(ddata[5],\"[\")[1]))), AuditType = toint(replace('\"','',tostring(split(ddata[8],\":\")[1]))), Length = toint(replace('\\'','',tostring(ddata[7]))), DBI = toint(replace('\"','',tostring(split(ddata[9],\":\")[1]))), SesId = tolong(replace('\"','',tostring(split(ddata[10],\":\")[1]))), ClientId = replace('\"','',tostring(split(ddata[11],\":\")[1])), EntryId = toint(replace('\"','',tostring(split(ddata[12],\":\")[1]))), STMTId = toint(replace('\"','',tostring(split(ddata[13],\":\")[1]))), DbUser = replace('\"','',tostring(split(ddata[14],\":\")[1])), CurUser = replace('\"','',tostring(split(ddata[15],\":\")[1])), Action = toint(replace('\"','',tostring(split(ddata[16],\":\")[1]))), RetCode = toint(replace('\"','',tostring(split(ddata[17],\":\")[1]))), Schema = replace('\"','',tostring(split(ddata[18],\":\")[1])), ObjName = replace('\"','',tostring(split(ddata[19],\":\")[1])), PDB_GUID = toguid(replace('\"','',tostring(split(ddata[20],\":\")[1])))| project-away ddata, RawData"
+    },
+    "dceName": {
+      "value": "dceSample"
+    },
+    "dcrName": {
+      "value": "dcrSample"
+    },
+    "windowsLogFileFormat": {
+      "value": "c:\\temp\\dbaudit*.log"
+    },
+    "linuxLogFileFormat": {
+      "value": "/var/dbaudit*.log"
+    },
+    "streamDeclarations": {
+      "value": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "RawData",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "tableschema": {
+      "value": [
+        {
+          "name": "TimeGenerated",
+          "type": "datetime"
+        },
+        {
+          "name": "Computer",
+          "type": "string"
+        },
+        {
+          "name": "JournalType",
+          "type": "string"
+        },
+        {
+          "name": "Oracle_Unified_Audit",
+          "type": "int"
+        },
+        {
+          "name": "AuditType",
+          "type": "int"
+        },
+        {
+          "name": "Length",
+          "type": "int"
+        },
+        {
+          "name": "DBI",
+          "type": "int"
+        },
+        {
+          "name": "SesId",
+          "type": "long"
+        },
+        {
+          "name": "EntryId",
+          "type": "int"
+        },
+        {
+          "name": "STMTId",
+          "type": "int"
+        },
+        {
+          "name": "DbUser",
+          "type": "string"
+        },
+        {
+          "name": "CurUser",
+          "type": "string"
+        },
+        {
+          "name": "Action",
+          "type": "int"
+        },
+        {
+          "name": "RetCode",
+          "type": "int"
+        },
+        {
+          "name": "PDB_GUID",
+          "type": "guid"
+        }
+      ]
+    }
+  }
+}
