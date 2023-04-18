@@ -24,7 +24,7 @@ $db_syslog_sample = Get-Content -Path "$logFolder\\db_syslog_sample.txt"
 
 foreach($logline in $db_syslog_sample){
     $logrecord = $logline.Substring(33,$logline.Length-33)
-    $logrecord =  "$(Get-Date -format s)Z $($logrecord)"
+    $logrecord =  "$(Get-Date -format s).000000+00:00 $($logrecord)"
     Write-Host $logrecord
     $logrecord | Out-File "$logFolder\\$logFileName" -Encoding utf8 -Append
     Start-Sleep $sleepSeconds

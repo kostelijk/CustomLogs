@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "laName": {
+      "value": "lawcustom"
+    },
+    "laResourceGroup": {
+      "value": "rg-customlog"
+    },
+    "customTableName": {
+      "value": "customlog"
+    },
+    "transformKql": {
+      "value": "source|extend Data = substring(RawData, 22, strlen(RawData))| extend Dynamic = split(Data,\":\")| extend Computer = tostring(Dynamic[0]), Error = toint(Dynamic[1]), Description = tostring(Dynamic[2])|where Error > 5| project-away RawData, Data, Dynamic"
+    },
+    "dceName": {
+      "value": "dceCustom"
+    },
+    "dcrName": {
+      "value": "dcrCustom"
+    },
+    "windowsLogFileFormat": {
+      "value": "c:\\temp\\TestLog*.log"
+    },
+    "linuxLogFileFormat": {
+      "value": "/var/TestLog*.log"
+    },
+    "streamDeclarations": {
+      "value": {
+        "columns": [
+          {
+            "name": "TimeGenerated",
+            "type": "datetime"
+          },
+          {
+            "name": "RawData",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    "tableschema": {
+      "value": [
+        {
+          "name": "TimeGenerated",
+          "type": "datetime"
+        },
+        {
+          "name": "Computer",
+          "type": "string"
+        },
+        {
+          "name": "Error",
+          "type": "int"
+        },
+        {
+          "name": "Description",
+          "type": "string"
+        }      ]
+    }
+  }
+}

@@ -1,3 +1,6 @@
+// Notes and query experiments
+
+
 let testtable = datatable(RawData:string)['2023-04-04T11:23:10.283011+00:00 copc99ennvm01 journal:info: Oracle Unified Audit[329046]: LENGTH: \'198\' TYPE:"4" DBID:"2012501193" SESID:"3211764589" CLIENTID:"" ENTRYID:"1" STMTID:"1" DBUSER:"SYS" CURUSER:"SYS" ACTION:"100" RETCODE:"0" SCHEMA:"" OBJNAME:"" PDB_GUID:"DE03BE2347E57ADBE053C00DD10A4229"'];
 testtable
 | extend ddata = split(RawData, ' ')
@@ -20,3 +23,21 @@ testtable
 | extend ObjName = replace('\"','',tostring(split(ddata[19],":")[1]))
 | extend PDB_GUID = replace('\"','',tostring(split(ddata[20],":")[1]))
 | project-away ddata, RawData
+
+let testtable = datatable(RawData:string)['2023-04-04T11:23:10.283011+00:00 copc99ennvm01 journal:info: Oracle Unified Audit[329046]: LENGTH: \'198\' TYPE:"4" DBID:"2012501193" SESID:"3211764589" CLIENTID:"" ENTRYID:"1" STMTID:"1" DBUSER:"SYS" CURUSER:"SYS" ACTION:"100" RETCODE:"0" SCHEMA:"" OBJNAME:"" PDB_GUID:"DE03BE2347E57ADBE053C00DD10A4229"'];
+testtable
+| parse RawData with TimeGenerated: datetime " " Computer: string " journal:" JournalType: string ": Oracle Unified Audit[" Oracle_Unified_Audit: int "]: LENGTH: '" Length: int "' TYPE:\"" AuditType: int "\" DBID:\"" DBID: int "\" SESID:\"" SesId:long "\" CLIENTID:\"" CliendId "\" ENTRYID:\"" EntryId: int "\" STMTID:\"" STMTId: int "\" DBUSER:\"" DbUser: string "\" CURUSER:\"" CurUser: string "\" ACTION:\"" Action: int "\" RETCODE:\"" RetCode: int "\" SCHEMA:\"" Schema "\" OBJNAME:\"" ObjName "\" PDB_GUID:\"" PDB_GUID: guid "\""
+| project-away RawData
+
+    "transformKql": {
+      "value": "source| extend ddata = split(RawData, ' ')| extend Computer = tostring(ddata[1]), JournalType = tostring(split(ddata[2],':')[1]), Oracle_Unified_Audit = toint(replace(']:','',tostring(split(ddata[5],\"[\")[1]))), AuditType = toint(replace('\"','',tostring(split(ddata[8],\":\")[1]))), Length = toint(replace('\\'','',tostring(ddata[7]))), DBI = toint(replace('\"','',tostring(split(ddata[9],\":\")[1]))), SesId = tolong(replace('\"','',tostring(split(ddata[10],\":\")[1]))), ClientId = replace('\"','',tostring(split(ddata[11],\":\")[1])), EntryId = toint(replace('\"','',tostring(split(ddata[12],\":\")[1]))), STMTId = toint(replace('\"','',tostring(split(ddata[13],\":\")[1]))), DbUser = replace('\"','',tostring(split(ddata[14],\":\")[1])), CurUser = replace('\"','',tostring(split(ddata[15],\":\")[1])), Action = toint(replace('\"','',tostring(split(ddata[16],\":\")[1]))), RetCode = toint(replace('\"','',tostring(split(ddata[17],\":\")[1]))), Schema = replace('\"','',tostring(split(ddata[18],\":\")[1])), ObjName = replace('\"','',tostring(split(ddata[19],\":\")[1])), PDB_GUID = toguid(replace('\"','',tostring(split(ddata[20],\":\")[1])))| project-away ddata, RawData"
+    }
+
+    AND
+
+    "transformKql": {
+      "value": "source |parse RawData with  * \"Z \" Computer: string \" journal:\" JournalType: string \": Oracle Unified Audit[\" Oracle_Unified_Audit: int \"]: LENGTH: '\" Length: int \"' TYPE:\\\"\" AuditType: int \"\\\" DBID:\\\"\" DBID: int \"\\\" SESID:\\\"\" SesId:long \"\\\" CLIENTID:\\\"\" CliendId: int \"\\\" ENTRYID:\\\"\" EntryId: int \"\\\" STMTID:\\\"\" STMTId: int \"\\\" DBUSER:\\\"\" DbUser: string \"\\\" CURUSER:\\\"\" CurUser: string \"\\\" ACTION:\\\"\" Action: int \"\\\" RETCODE:\\\"\" RetCode: int \"\\\" SCHEMA:\\\"\" Schema \"\\\" OBJNAME:\\\"\" ObjName \"\\\" PDB_GUID:\" * | extend PDB_GUID = toguid(replace('\"','',tostring(split(split(RawData, ' ')[20],\":\")[1]))) |project-away RawData"
+
+    }
+
+    Wil both work!
