@@ -27,5 +27,5 @@ foreach($logline in $db_syslog_sample){
     $logrecord =  "$(Get-Date -format s).000000+00:00 $($logrecord)"
     Write-Host $logrecord
     $logrecord | Out-File "$logFolder\\$logFileName" -Encoding utf8 -Append
-    Start-Sleep $sleepSeconds
+    Start-Sleep (Get-Random $sleepSeconds)
 }
